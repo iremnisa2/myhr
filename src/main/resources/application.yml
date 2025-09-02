@@ -3,26 +3,29 @@ spring:
     url: jdbc:mysql://localhost:3307/myhr?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: root
     password: root
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
     properties:
-      hibernate.format_sql: true
-      hibernate.jdbc.time_zone: UTC
-      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: myhr1313@gmail.com
+    password: wclmbrclawaweqol
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
+      mail.debug: true
+
+
 app:
   base-url: "http://localhost:8080"
-
-  spring:
-    mail:
-      host: smtp.gmail.com
-      port: 587
-      username: myhr1313@gmail.com
-      password: wclmbrclawaweqol
-      properties:
-        mail.smtp.auth: true
-        mail.smtp.starttls.enable: true
-
+  mail:
+    enabled: true

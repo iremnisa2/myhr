@@ -40,11 +40,6 @@ public class CompanyEntity {
     @Column(length=200)
     private String passwordHash;
 
-    @Column(length=200)
-    private String approvalToken;
-
-    @Column(name = "approval_token_expires_at")
-    private Instant approvalTokenExpiresAt;
 
     @CreationTimestamp
     @Column(nullable=false, updatable=false)

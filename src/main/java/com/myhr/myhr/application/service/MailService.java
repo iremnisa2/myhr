@@ -74,7 +74,7 @@ public class MailService {
             }
             helper.setTo(to.trim());
             helper.setSubject(subject);
-            // Plain + HTML alternatif gövde
+
             helper.setText(plain, html);
 
             mailSender.send(msg);

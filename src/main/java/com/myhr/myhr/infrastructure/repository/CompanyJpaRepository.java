@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface CompanyJpaRepository extends JpaRepository<CompanyEntity, Long> {
     boolean existsByEmail(String email);
     boolean existsByPhone(String phone);
-    Optional<CompanyEntity> findByApprovalToken(String approvalToken);
+
 }
