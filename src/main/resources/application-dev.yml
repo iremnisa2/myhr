@@ -1,0 +1,16 @@
+app:
+  base-url: "http://localhost:8080"
+  mail:
+    enabled: true
+
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: myhr1313@gmail.com
+    password: wclmbrclawaweqol
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
+      mail.debug: true
