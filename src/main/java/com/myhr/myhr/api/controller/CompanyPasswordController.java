@@ -4,12 +4,13 @@ import com.myhr.myhr.application.service.CompanyPasswordService;
 import com.myhr.myhr.domain.exception.ApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequiredArgsConstructor
+@RestController
 @RequestMapping("/api/companies")
+@RequiredArgsConstructor
 public class CompanyPasswordController {
 
     private final CompanyPasswordService companyPasswordService;
@@ -63,24 +64,38 @@ public class CompanyPasswordController {
                       </body>
                     </html>
                 """;
+
     }
 
-    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class , ApiException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public String handleErrors(RuntimeException ex) {
-        return """
-                    <!doctype html>
-                    <html lang="tr">
-                      <head>
-                        <meta charset="UTF-8">
-                        <title>Hata</title>
-                      </head>
-                      <body>
-                        <h2>İşlem Başarısız ❌</h2>
-                        <p>%s</p>
-                      </body>
-                    </html>
+
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<String> handleApi(ApiException ex) {
+        String html = """
+                <!doctype html>
+                <html lang="tr">
+                  <head><meta charset="UTF-8"><title>Hata</title></head>
+                  <body>
+                    <h2>İşlem Başarısız ❌</h2>
+                    <p>%s</p>
+                  </body>
+                </html>
                 """.formatted(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(html);
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    public ResponseEntity<String> handleBad(RuntimeException ex) {
+        String html = """
+                <!doctype html>
+                <html lang="tr">
+                  <head><meta charset="UTF-8"><title>Hata</title></head>
+                  <body>
+                    <h2>İşlem Başarısız ❌</h2>
+                    <p>%s</p>
+                  </body>
+                </html>
+                """.formatted(ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(html);
     }
 }

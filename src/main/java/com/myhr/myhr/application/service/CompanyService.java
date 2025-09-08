@@ -16,12 +16,17 @@ import java.time.Instant;
 @Service
 @RequiredArgsConstructor
 public class CompanyService {
+
     private final CompanyJpaRepository companyRepo;
 
     @Transactional
     public CompanyResponse apply(CompanyApplyRequest req) {
-        if (companyRepo.existsByEmail(req.email())) throw new ApiException(ErrorCode.EMAIL_ALREADY_EXISTS);
-        if (companyRepo.existsByPhone(req.phone())) throw new ApiException(ErrorCode.PHONE_ALREADY_EXISTS);
+        if (companyRepo.existsByEmail(req.email())) {
+            throw new ApiException(ErrorCode.EMAIL_ALREADY_EXISTS);
+        }
+        if (companyRepo.existsByPhone(req.phone())) {
+            throw new ApiException(ErrorCode.PHONE_ALREADY_EXISTS);
+        }
 
         var company = CompanyEntity.builder()
                 .name(req.name())
@@ -31,13 +36,16 @@ public class CompanyService {
                 .status(CompanyStatus.PENDING)
                 .build();
 
-        companyRepo.saveAndFlush(company);
+        companyRepo.save(company);
 
         return new CompanyResponse(
-                company.getId(), company.getName(), company.getEmail(),
-                company.getPhone(), company.getEmployeeCount(),
+                company.getId(),
+                company.getName(),
+                company.getEmail(),
+                company.getPhone(),
+                company.getEmployeeCount(),
                 company.getStatus(),
-                company.getCreatedAt() != null ? company.getCreatedAt().toString() : Instant.now().toString()
+                company.getCreatedAt()
         );
     }
 }

@@ -54,16 +54,17 @@ public class MailService {
 
                 Hesabınızı aktifleştirmek için aşağıdaki bağlantıya tıklayın:
                 %s
-
+                 Token : %s
                 Eğer bu işlemi siz başlatmadıysanız bu maili yok sayabilirsiniz.
-                """.formatted(link);
+                """.formatted(link,token);
 
         String html = """
                 Merhaba,<br><br>
                 Hesabınızı aktifleştirmek için aşağıdaki bağlantıya tıklayın:<br>
                 <a href="%s">%s</a><br><br>
+                 Token: <b>%s</b><br><br>
                 Eğer bu işlemi siz başlatmadıysanız bu maili yok sayabilirsiniz.
-                """.formatted(link, link);
+                """.formatted(link, link, token);
 
         try {
             MimeMessage msg = mailSender.createMimeMessage();

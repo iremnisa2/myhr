@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
+
+
 @Service
 @RequiredArgsConstructor
 public class CompanyPasswordService {
@@ -20,6 +22,7 @@ public class CompanyPasswordService {
     private final ApprovalTokenJpaRepository approvalTokenRepo;
     private final CompanyJpaRepository companyRepo;
     private final PasswordEncoder passwordEncoder;
+
 
     public void setPassword(String token, String rawPassword) {
         String t = token == null ? null : token.trim();
@@ -29,20 +32,22 @@ public class CompanyPasswordService {
         if (at.getExpiresAt() == null || at.getExpiresAt().isBefore(Instant.now())) {
             throw new ApiException(ErrorCode.TOKEN_EXPIRED);
         }
-
         CompanyEntity company = at.getCompany();
+
 
         if (!rawPassword.matches("^(?=.*[A-Za-z])(?=.*\\d).{8,}$")) {
             throw new ApiException(ErrorCode.PASSWORD_TOO_WEAK);
         }
 
+
         company.setPasswordHash(passwordEncoder.encode(rawPassword));
 
-         company.setStatus(CompanyStatus.APPROVED);
 
+        company.setStatus(CompanyStatus.ACTIVE);
         companyRepo.save(company);
 
 
-        approvalTokenRepo.delete(at);
+        at.setUsed(true);
+        approvalTokenRepo.save(at);
     }
 }

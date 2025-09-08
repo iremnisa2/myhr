@@ -9,10 +9,11 @@ import com.myhr.myhr.infrastructure.entity.CompanyEntity;
 import com.myhr.myhr.infrastructure.repository.ApprovalTokenJpaRepository;
 import com.myhr.myhr.infrastructure.repository.CompanyJpaRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponentsBuilder;
+
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -27,20 +28,26 @@ public class CompanyApprovalService {
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
 
-
+    @Transactional
     public String approveAndCreateToken(Long companyId) {
         CompanyEntity company = companyRepo.findById(companyId)
                 .orElseThrow(() -> new ApiException(
-                        ErrorCode.COMPANY_NOT_FOUND,
-                        "Şirket bulunamadı: id=" + companyId));
+                        ErrorCode.COMPANY_NOT_FOUND));
 
 
-        company.setStatus(CompanyStatus.APPROVED);
+
+        CompanyStatus status = company.getStatus();
+        switch (status) {
+            case PENDING -> company.setStatus(CompanyStatus.APPROVED);
+            case APPROVED -> {  }
+            case ACTIVE -> throw new ApiException(ErrorCode.ALREADY_EXISTS);
+        }
+
         companyRepo.save(company);
 
 
         String token = UUID.randomUUID().toString();
-        Instant expiresAt = Instant.now().plus(30, ChronoUnit.MINUTES);
+        Instant expiresAt = Instant.now().plus(24, ChronoUnit.HOURS);
 
         ApprovalTokenEntity approval = ApprovalTokenEntity.builder()
                 .token(token)
@@ -69,18 +76,17 @@ public class CompanyApprovalService {
     public void setPasswordWithToken(String token, String rawPassword) {
         var approval = approvalRepo.findByToken(token.trim())
                 .orElseThrow(() -> new ApiException(
-                        ErrorCode.TOKEN_NOT_FOUND, "Token bulunamadı"));
+                        ErrorCode.TOKEN_NOT_FOUND));
 
         if (Boolean.TRUE.equals(approval.isUsed())) {
-            throw new ApiException(ErrorCode.TOKEN_USED, "Token daha önce kullanılmış");
+            throw new ApiException(ErrorCode.TOKEN_USED);
         }
         if (approval.getExpiresAt() != null && approval.getExpiresAt().isBefore(Instant.now())) {
-            throw new ApiException(ErrorCode.TOKEN_EXPIRED, "Token süresi dolmuş");
+            throw new ApiException(ErrorCode.TOKEN_EXPIRED);
         }
 
         CompanyEntity company = approval.getCompany();
         company.setPasswordHash(passwordEncoder.encode(rawPassword));
-        company.setStatus(CompanyStatus.ACTIVE);
         companyRepo.save(company);
 
         approval.setUsed(true);

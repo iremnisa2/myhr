@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "Validation error"),
     COMPANY_NOT_FOUND(HttpStatus.NOT_FOUND, "Company not found"),
+    ALREADY_EXISTS(HttpStatus.CONFLICT, "Already exists"),
     TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "Approval token not found"),
     TOKEN_EXPIRED(HttpStatus.BAD_REQUEST, "Approval token expired"),
     TOKEN_USED(HttpStatus.BAD_REQUEST, "Approval token already used"),

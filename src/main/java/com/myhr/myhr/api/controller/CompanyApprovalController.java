@@ -22,7 +22,7 @@ public class CompanyApprovalController {
 
 
         return ResponseEntity.ok(Map.of(
-                "message", "Approval mail sent (fake log).",
+                "message", "Approval mail sent.",
                 "token", token
         ));
     }
