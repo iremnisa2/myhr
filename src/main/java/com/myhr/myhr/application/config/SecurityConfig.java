@@ -20,7 +20,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(reg -> reg
 
                         .requestMatchers("/api/companies/set-password").permitAll()
-                        .requestMatchers( "/api/companies/set-password").permitAll()
+
 
                         .anyRequest().permitAll()
                 );
