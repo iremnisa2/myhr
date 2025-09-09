@@ -13,6 +13,7 @@ public enum ErrorCode {
     EMAIL_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,  "Email already exists"),
     PHONE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,   "Phone number already exists"),
     MAIL_NOT_SEND(HttpStatus.BAD_REQUEST,   "Mail not send"),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Unauthorized"),
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected server error");
     public final HttpStatus status;
     public final String message;
