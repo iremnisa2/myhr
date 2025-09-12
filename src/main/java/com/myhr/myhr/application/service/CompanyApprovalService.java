@@ -87,6 +87,9 @@ public class CompanyApprovalService {
 
         CompanyEntity company = approval.getCompany();
         company.setPasswordHash(passwordEncoder.encode(rawPassword));
+        if (company.getStatus() != CompanyStatus.ACTIVE) {
+            company.setStatus(CompanyStatus.ACTIVE);
+        }
         companyRepo.save(company);
 
         approval.setUsed(true);

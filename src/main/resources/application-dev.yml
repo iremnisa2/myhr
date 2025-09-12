@@ -1,16 +1,46 @@
-app:
-  base-url: "http://localhost:8080"
-  mail:
-    enabled: true
-
 spring:
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3307/myhr?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
   mail:
     host: smtp.gmail.com
     port: 587
-    username: myhr1313@gmail.com
-    password: wclmbrclawaweqol
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
     properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
-      mail.smtp.starttls.required: true
-      mail.debug: true
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-stacktrace: always
+    include-message: always
+
+app:
+  base-url: ${APP_BASE_URL:http://localhost:8080}
+
+recaptcha:
+  site: ${RECAPTCHA_SITE_KEY:}
+  secret: ${RECAPTCHA_SECRET_KEY:}
+  minScore: ${RECAPTCHA_MIN_SCORE:0.5}
+
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: DEBUG
+    level:
+      org.springframework: DEBUG
+      com.myhr: DEBUG

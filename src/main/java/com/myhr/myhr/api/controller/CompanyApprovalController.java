@@ -1,7 +1,6 @@
 package com.myhr.myhr.api.controller;
 
 import com.myhr.myhr.application.service.CompanyApprovalService;
-import com.myhr.myhr.domain.exception.ApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

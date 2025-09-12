@@ -1,5 +1,6 @@
 package com.myhr.myhr.application.config;
 
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -8,6 +9,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.ViewResolver;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -32,4 +36,9 @@ public class SecurityConfig {
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    @Bean
+    ApplicationRunner printViewResolvers(List<ViewResolver> resolvers) {
+        return args -> resolvers.forEach(vr -> System.out.println("VIEW RESOLVER: " + vr.getClass().getName()));
+    }
+
 }

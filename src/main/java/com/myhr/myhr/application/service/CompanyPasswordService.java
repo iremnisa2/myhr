@@ -1,5 +1,6 @@
 package com.myhr.myhr.application.service;
 
+import com.myhr.myhr.application.validation.PasswordPolicyValidator;
 import com.myhr.myhr.domain.CompanyStatus;
 import com.myhr.myhr.domain.exception.ApiException;
 import com.myhr.myhr.domain.exception.ErrorCode;
@@ -34,11 +35,10 @@ public class CompanyPasswordService {
         }
         CompanyEntity company = at.getCompany();
 
-
-        if (!rawPassword.matches("^(?=.*[A-Za-z])(?=.*\\d).{8,}$")) {
+        var policyErrors = PasswordPolicyValidator.validate(rawPassword);
+        if (!policyErrors.isEmpty()) {
             throw new ApiException(ErrorCode.PASSWORD_TOO_WEAK);
         }
-
 
         company.setPasswordHash(passwordEncoder.encode(rawPassword));
 

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Hata</title>
+    <style>
+        body{margin:0;height:100%;display:flex;align-items:center;justify-content:center;background:#f9fafb;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
+        .card{background:#fff;padding:48px;border-radius:18px;box-shadow:0 14px 32px rgba(0,0,0,.12);text-align:center;max-width:560px;width:100%}
+        h2{color:#991b1b;font-size:28px;margin-bottom:16px}
+        p{font-size:20px;color:#374151;margin:8px 0 20px}
+        a.button{display:inline-block;padding:14px 24px;border-radius:12px;background:#f9a9d5;color:#fff;font-size:16px;font-weight:600;text-decoration:none;transition:background .2s}
+        a.button:hover{background:#f472b6}
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2>İşlem Başarısız ❌</h2>
+    <p th:text="${message}">Bir hata oluştu.</p>
+    <a class="button" href="/api/companies/apply-form">Giriş sayfasına dön</a>
+</div>
+</body>
+</html>
