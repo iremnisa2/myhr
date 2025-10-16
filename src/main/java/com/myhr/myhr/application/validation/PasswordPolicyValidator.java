@@ -39,11 +39,6 @@ public final class PasswordPolicyValidator {
             errors.add("En az bir rakam içermeli (0-9).");
 
         }
-        if (WHITESPACE.matcher(raw).find()) {
-            errors.add("Boşluk içeremez.");
-        }
-
-
 
         return errors;
     }

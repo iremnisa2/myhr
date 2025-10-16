@@ -1,6 +1,7 @@
 package com.myhr.myhr.infrastructure.entity;
 
 import com.myhr.myhr.domain.CompanyStatus;
+import com.myhr.myhr.domain.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -39,7 +40,6 @@ public class CompanyEntity {
 
     @Column(length=200)
     private String passwordHash;
-
 
     @CreationTimestamp
     @Column(nullable=false, updatable=false)

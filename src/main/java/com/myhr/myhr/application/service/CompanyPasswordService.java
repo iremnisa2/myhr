@@ -11,10 +11,9 @@ import com.myhr.myhr.infrastructure.repository.CompanyJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-
-
 
 @Service
 @RequiredArgsConstructor
@@ -24,30 +23,34 @@ public class CompanyPasswordService {
     private final CompanyJpaRepository companyRepo;
     private final PasswordEncoder passwordEncoder;
 
-
+    @Transactional
     public void setPassword(String token, String rawPassword) {
         String t = token == null ? null : token.trim();
 
         ApprovalTokenEntity at = approvalTokenRepo.findByToken(t)
                 .orElseThrow(() -> new ApiException(ErrorCode.TOKEN_NOT_FOUND));
+
+        if (Boolean.TRUE.equals(at.isUsed())) {
+            throw new ApiException(ErrorCode.TOKEN_USED);
+        }
         if (at.getExpiresAt() == null || at.getExpiresAt().isBefore(Instant.now())) {
             throw new ApiException(ErrorCode.TOKEN_EXPIRED);
         }
-        CompanyEntity company = at.getCompany();
 
         var policyErrors = PasswordPolicyValidator.validate(rawPassword);
         if (!policyErrors.isEmpty()) {
             throw new ApiException(ErrorCode.PASSWORD_TOO_WEAK);
         }
 
+        CompanyEntity company = at.getCompany();
         company.setPasswordHash(passwordEncoder.encode(rawPassword));
-
-
         company.setStatus(CompanyStatus.ACTIVE);
         companyRepo.save(company);
 
 
-        at.setUsed(true);
-        approvalTokenRepo.save(at);
+        int updated = approvalTokenRepo.markUsedIfNotUsed(t);
+        if (updated == 0) {
+            throw new ApiException(ErrorCode.TOKEN_USED, "Token zaten kullanılmış.");
+        }
     }
 }

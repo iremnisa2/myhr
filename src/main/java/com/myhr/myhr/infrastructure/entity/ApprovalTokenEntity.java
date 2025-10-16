@@ -1,5 +1,4 @@
 package com.myhr.myhr.infrastructure.entity;
-
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import lombok.Getter;

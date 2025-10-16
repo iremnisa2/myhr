@@ -1,7 +1,6 @@
 app:
   mail:
     enabled: true
-
 spring:
   jpa:
     properties:

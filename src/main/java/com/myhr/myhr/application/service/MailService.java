@@ -22,7 +22,6 @@ public class MailService {
     @Value("${app.base-url:http://localhost:8080}")
     private String baseUrl;
 
-
     @Value("${spring.mail.username:}")
     private String fromAddress;
 
@@ -54,17 +53,16 @@ public class MailService {
 
                 Hesabınızı aktifleştirmek için aşağıdaki bağlantıya tıklayın:
                 %s
-                 Token : %s
+
                 Eğer bu işlemi siz başlatmadıysanız bu maili yok sayabilirsiniz.
-                """.formatted(link,token);
+                """.formatted(link);
 
         String html = """
                 Merhaba,<br><br>
                 Hesabınızı aktifleştirmek için aşağıdaki bağlantıya tıklayın:<br>
                 <a href="%s">%s</a><br><br>
-                 Token: <b>%s</b><br><br>
                 Eğer bu işlemi siz başlatmadıysanız bu maili yok sayabilirsiniz.
-                """.formatted(link, link, token);
+                """.formatted(link, link);  
 
         try {
             MimeMessage msg = mailSender.createMimeMessage();
@@ -75,7 +73,6 @@ public class MailService {
             }
             helper.setTo(to.trim());
             helper.setSubject(subject);
-
             helper.setText(plain, html);
 
             mailSender.send(msg);

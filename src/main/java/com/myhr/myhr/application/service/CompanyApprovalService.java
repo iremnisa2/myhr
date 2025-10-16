@@ -9,7 +9,10 @@ import com.myhr.myhr.infrastructure.entity.CompanyEntity;
 import com.myhr.myhr.infrastructure.repository.ApprovalTokenJpaRepository;
 import com.myhr.myhr.infrastructure.repository.CompanyJpaRepository;
 
-import jakarta.transaction.Transactional;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,23 +31,22 @@ public class CompanyApprovalService {
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
 
+
     @Transactional
     public String approveAndCreateToken(Long companyId) {
+
         CompanyEntity company = companyRepo.findById(companyId)
                 .orElseThrow(() -> new ApiException(
                         ErrorCode.COMPANY_NOT_FOUND));
-
-
 
         CompanyStatus status = company.getStatus();
         switch (status) {
             case PENDING -> company.setStatus(CompanyStatus.APPROVED);
             case APPROVED -> {  }
-            case ACTIVE -> throw new ApiException(ErrorCode.ALREADY_EXISTS);
+            case ACTIVE -> throw new ApiException(ErrorCode.ALREADY_EXISTS, "Şirket zaten aktif edilmiş.");
         }
 
         companyRepo.save(company);
-
 
         String token = UUID.randomUUID().toString();
         Instant expiresAt = Instant.now().plus(24, ChronoUnit.HOURS);
@@ -57,7 +59,6 @@ public class CompanyApprovalService {
                 .build();
 
         approvalRepo.save(approval);
-
 
         try {
             mailService.sendSetPasswordMail(company.getEmail(), token);
@@ -72,11 +73,12 @@ public class CompanyApprovalService {
         return token;
     }
 
-
+    @Transactional
     public void setPasswordWithToken(String token, String rawPassword) {
         var approval = approvalRepo.findByToken(token.trim())
                 .orElseThrow(() -> new ApiException(
                         ErrorCode.TOKEN_NOT_FOUND));
+
 
         if (Boolean.TRUE.equals(approval.isUsed())) {
             throw new ApiException(ErrorCode.TOKEN_USED);

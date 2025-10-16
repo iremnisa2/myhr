@@ -8,12 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+
 import java.time.Instant;
 import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
 
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<Map<String, Object>> handleApi(ApiException ex, HttpServletRequest req) {
@@ -28,9 +30,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(code.status).body(Map.of(
                 "timestamp", Instant.now().toString(),
                 "error", code.name(),
-                "message", msg
+                "message", msg,
+                "path", safePath(req)
         ));
     }
+
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleOther(Exception ex, HttpServletRequest req) {
@@ -44,7 +49,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(code.status).body(Map.of(
                 "timestamp", Instant.now().toString(),
                 "error", code.name(),
-                "message", msg
+                "message", msg,
+                "path", safePath(req)
         ));
     }
 

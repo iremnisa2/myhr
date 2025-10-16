@@ -1,17 +1,17 @@
+
 spring:
   datasource:
     url: ${DB_URL:jdbc:mysql://localhost:3307/myhr?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:root}
-  spring:
-    jpa:
-      hibernate:
-        ddl-auto: validate
 
-    flyway:
-      enabled: true
-      clean-disabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
 
+  flyway:
+    enabled: true
+    clean-disabled: true
 
 
 server:
@@ -20,8 +20,14 @@ server:
     include-stacktrace: always
     include-message: always
 
+
 app:
-  base-url: ${APP_BASE_URL:http://localhost:8080}
+  jwt:
+    secret: ${APP_JWT_SECRET:change-this-in-dev-only-please}  
+    issuer: myhr
+    expires-min: 30
+    refresh-exp-days: 7
+
 
 recaptcha:
   site: ${RECAPTCHA_SITE_KEY:}
@@ -31,7 +37,6 @@ recaptcha:
 logging:
   level:
     root: INFO
+    org.springframework: DEBUG
     org.hibernate.SQL: DEBUG
-    level:
-      org.springframework: DEBUG
-      com.myhr: DEBUG
+    com.myhr: DEBUG
