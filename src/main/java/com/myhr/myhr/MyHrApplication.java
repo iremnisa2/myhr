@@ -22,7 +22,7 @@ public class MyHrApplication {
 	CommandLineRunner seedAdmin(UserAccountJpaRepository users,
 								PasswordEncoder encoder,
 								@Value("${spring.mail.username}") String mailUser,
-								@Value("${ADMIN_PASSWORD:Admin!234}") String adminPass) {
+								@Value("${ADMIN_PASSWORD}") String adminPass) {
 		return args -> {
 			if (!users.existsByEmail(mailUser)) {
 				UserAccountEntity admin = new UserAccountEntity();
